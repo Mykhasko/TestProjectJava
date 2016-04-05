@@ -89,6 +89,10 @@ public class main {
 
     }
 
+    /**
+     * @param str1
+     * @param str2
+     */
     private static void swapString(String[] str1, String[] str2) {
         String[] _temporaryString = str1;
         str1 = str2;
