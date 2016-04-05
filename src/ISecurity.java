@@ -3,10 +3,10 @@
  */
 public interface ISecurity {
 
-    public String Name = "";
+    String Name = "";
 
-    public int Id = 0;
+    int Id = 0;
 
-    public EnTypeSecurity Type = EnTypeSecurity.SECURITY;
+    EnTypeSecurity Type = EnTypeSecurity.SECURITY;
 
 }
