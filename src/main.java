@@ -1,6 +1,7 @@
 import org.h2.*;
 
-import static main.methodOfSort.*;
+import java.sql.*;
+
 
 
 /**
@@ -9,6 +10,10 @@ import static main.methodOfSort.*;
 
 public class main {
     //
+    static java.sql.Connection conn;
+    static String baseStringPath = "jdbc:h2:~/test";
+    static String baseLogin = "sa";
+    static String basePassword = "";
 
     public static void main(String[] args) {
 
@@ -21,10 +26,10 @@ public class main {
 
         printArray(test);
 
-        sortArray(test, toLower);
+        sortArray(test, methodOfSort.toLower);
         printArray(test);
 
-        sortArray(test, toUpper);
+        sortArray(test, methodOfSort.toUpper);
         printArray(test);
 
 
@@ -36,6 +41,37 @@ public class main {
         swapString(stringFirst, stringSecond);
 
         System.out.println(stringFirst + " " + stringSecond);
+
+        try {
+            testConnectionH2();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Next itteration!::");
+
+        try {
+            testConnectionH2();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int y;
+        int x = 2;
+        if (x < 0) {
+            y = 1;
+        } else {
+            y = 2;
+        }
+
+        System.out.printf("Value y = %d \n", y);
+
+        // testing prime numbers
+        java.util.ArrayList<Integer> arL = findPrimeNumbers(1000);
+
+        for (int i = 0; i < arL.size(); i++) {
+            System.out.printf((((i + 1) % 10 == 0) ? "%5d\n" : "%5d,"), arL.get(i));
+        }
 
 
         // return 0;
@@ -69,11 +105,31 @@ public class main {
         for (int i = 0; i < ar.length; i++) {
             for (int y = i; y < ar.length; y++) {
                 if (((type == methodOfSort.toLower) & (ar[i] < ar[y]))
-                        || ((type == toUpper) & (ar[i] > ar[y]))) {
+                        || ((type == methodOfSort.toUpper) & (ar[i] > ar[y]))) {
                     swap(ar, i, y);
                 }
             }
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static void testConnectionH2() throws Exception {
+
+        Class.forName("org.h2.Driver");
+        if (conn == null || conn.isClosed())
+            conn = DriverManager.getConnection(baseStringPath, baseLogin, basePassword);
+
+        String sqlStatment = "select * from TEST";
+
+        ResultSet rs = conn.createStatement().executeQuery(sqlStatment);
+
+        while (rs.next()) {
+            System.out.println("ID: \t" + rs.getString("ID") + "\t NAME: \t" + rs.getString("NAME"));
+        }
+
+        conn.close();
     }
 
     /**
@@ -100,11 +156,36 @@ public class main {
     }
 
     /**
+     * This is function for searching prime numbers
+     * @param maxFigure range from 1 to max value in where we should find prime numbers
+     * @return array of list type Integer
+     */
+    public static java.util.ArrayList<Integer> findPrimeNumbers(int maxFigure) {
+        java.util.ArrayList<Integer> listOfPrimes = new java.util.ArrayList<Integer>();
+        for (int i = 1; i < maxFigure; i++) {
+            boolean isPrimeNumber = true;
+            for (int _index = 0; _index < listOfPrimes.size(); _index++) {
+                int divide = listOfPrimes.get(_index);
+                if (i % divide == 0 && divide != 1) {
+                    isPrimeNumber = false;
+                    break;
+                }
+
+            }
+            // if a number is prime we will add in array list
+            if (isPrimeNumber) {
+                listOfPrimes.add(i);
+            }
+        }
+
+        return listOfPrimes;
+    }
+
+    /**
      * The method of sorting
      */
     public enum methodOfSort {
         toLower,
         toUpper
     }
-
 }
