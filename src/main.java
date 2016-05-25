@@ -1,6 +1,8 @@
-import org.h2.*;
-
-import java.sql.*;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 
 
 
@@ -11,11 +13,15 @@ import java.sql.*;
 public class main {
     //
     static java.sql.Connection conn;
-    static String baseStringPath = "jdbc:h2:~/test";
-    static String baseLogin = "sa";
+    static String baseStringPath = "jdbc:h2:/home/vick/IdeaProjects/TestProject/TestProject"; //jdbc:h2:~/tesH2 - TestProject
+    static String baseLogin = "";
     static String basePassword = "";
 
+    public static int $;
+
     public static void main(String[] args) {
+
+        System.out.print($);
 
         System.out.println("Hello world!!!");
 
@@ -48,7 +54,7 @@ public class main {
             e.printStackTrace();
         }
 
-        System.out.println("Next itteration!::");
+        System.out.println("Next iteration!::");
 
         try {
             testConnectionH2();
@@ -67,12 +73,73 @@ public class main {
         System.out.printf("Value y = %d \n", y);
 
         // testing prime numbers
-        java.util.ArrayList<Integer> arL = findPrimeNumbers(1000);
-
+        java.util.ArrayList<Integer> arL = new java.util.ArrayList<Integer>();
+        try {
+            arL = findPrimeNumbers(1000);
+        } catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
+        }
         for (int i = 0; i < arL.size(); i++) {
             System.out.printf((((i + 1) % 10 == 0) ? "%5d\n" : "%5d,"), arL.get(i));
         }
 
+        try {
+            PrintWriter writer = new PrintWriter("text.txt","UTF-8");
+
+            for (int i = 0; i < arL.size(); i++) {
+                writer.printf("%5d;", arL.get(i));
+            }
+            writer.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
+        //////
+        System.out.printf("\nTest class:\n");
+        Security[] arraySecurity = new Security[]{new Security(), new Future(), new Bond(),new Future(), new Security()};
+        for (int i = 0; i < arraySecurity.length; i++){
+            arraySecurity[i].PrintOut();
+        }
+
+        System.out.printf("\nTest interface:\n");
+        ISecurity[] ar = new ISecurity[]{ new Security(), new Future(), new Bond(),new Future(), new Security()};
+        ((ISecurity)ar[0]).setName("Sec1");
+        ar[1].setName("Fut1");
+        ar[2].setName("Bond1");
+        ar[3].setName("Fut1");
+        ar[4].setName("Sec2");
+        for (int i = 0; i < ar.length; i++){
+            System.out.println("Name:" + ar[i].getName());
+            System.out.println("Name:" + ar[i].printOut() );
+        }
+
+
+
+        System.out.println("======================================================================================");
+        database.databasePath = "jdbc:h2:/home/vick/IdeaProjects/TestProject/TestProject";
+        database.login = "";
+        database.password = "";
+
+        java.util.ArrayList<Currency> currencyArrayList = new Catalogs.Currencies().getCurenciesList();
+
+        for (int i = 0; i < currencyArrayList.size(); i++){
+            Currency _t1 = currencyArrayList.get(i);
+            System.out.printf(" ID: %d \t Name: %s \t International code: %s \t International Symbol: %s \n", _t1.getIdCurrency(), _t1.getName(),_t1.getInternationalCode(),_t1.getInternationalSymbol());
+        }
+
+        System.out.println("======================================================================================");
+
+       /* //05/05/2016
+        (int n) -> { while(n >0){
+            System.out.println(n);
+            n=n/2;
+            }
+        }*/
 
         // return 0;
     }
@@ -121,12 +188,12 @@ public class main {
         if (conn == null || conn.isClosed())
             conn = DriverManager.getConnection(baseStringPath, baseLogin, basePassword);
 
-        String sqlStatment = "select * from TEST";
+        String sqlStatment = "SELECT t.IDCURRENCY,t.INTERNATIONALCODE,t.INTERNATIONALSYMBOL,t.NAME FROM PUBLIC.CURRENCIES AS t";
 
         ResultSet rs = conn.createStatement().executeQuery(sqlStatment);
 
         while (rs.next()) {
-            System.out.println("ID: \t" + rs.getString("ID") + "\t NAME: \t" + rs.getString("NAME"));
+            System.out.println("ID: \t" + rs.getString("IDCURRENCY") + "\t NAME: \t" + rs.getString("NAME"));
         }
 
         conn.close();
@@ -159,8 +226,12 @@ public class main {
      * This is function for searching prime numbers
      * @param maxFigure range from 1 to max value in where we should find prime numbers
      * @return array of list type Integer
+     * @Exception numbers less 0
      */
-    public static java.util.ArrayList<Integer> findPrimeNumbers(int maxFigure) {
+    public static java.util.ArrayList<Integer> findPrimeNumbers(int maxFigure) throws Exception {
+        // Checking entire parametr
+        if(maxFigure < 0 ) throw  new Exception("Parameter should be more than zero!");
+
         java.util.ArrayList<Integer> listOfPrimes = new java.util.ArrayList<Integer>();
         for (int i = 1; i < maxFigure; i++) {
             boolean isPrimeNumber = true;
